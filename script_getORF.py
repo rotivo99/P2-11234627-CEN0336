@@ -8,7 +8,7 @@ start = time.process_time()
 multifasta_file = sys.argv[1] #Pedindo para o usuário o arquivo que será processado.
 
 if os.path.exists(multifasta_file): #Se o arquivo existir...
-    print('File found. Continuing...') #Avise o usuário que tudo certo.
+    print('File found. Continuing...') #Avise o usuário que tudo certo. 
     with open(multifasta_file, 'r') as sys_read, open('ORF.fna', 'w') as nucleotide_write, open('ORF.faa', 'w') as peptide_write:
         nucleotide_dictionary = {} #Criando um dicionário para as sequências de nucleotídeos.
         for line in sys_read: #Para cada linha no arquivo inserido pelo usuário...
@@ -45,9 +45,9 @@ if os.path.exists(multifasta_file): #Se o arquivo existir...
                     CDS_regex = re.search(r'M.+\*', ORF_protein) #Encontrar uma região válida na proteína inteira traduzida.
                     coding_sequence = ORF_protein[CDS_regex.start():CDS_regex.end()] #Separando a região válida.
                     protein_dictionary[gene_tag][ORF_key] = coding_sequence #Colocando no dicionário de proteínas.
-                    peptide_write.write(f'>{gene_tag}_frame{ORF_key[3:7]}_{CDS_regex.start()}_{CDS_regex.end()}\n') #Criando tag para arquivo contendo as proteínas.
+                    peptide_write.write(f'>{gene_tag}_frame{ORF_key[3:7]}_{CDS_regex.start()+1}_{CDS_regex.end()}\n') #Criando tag para arquivo contendo as proteínas.
                     peptide_write.write(f'{coding_sequence}\n') #Sequência de proteínas.
-                    nucleotide_write.write(f'>{gene_tag}_frame{ORF_key[3:7]}_{CDS_regex.start()*4-2}_{CDS_regex.end()*3}\n') #Criango tag para arquivo contendo os nucleotídeos.
+                    nucleotide_write.write(f'>{gene_tag}_frame{ORF_key[3:7]}_{CDS_regex.start()*3-2}_{CDS_regex.end()*3}\n') #Criango tag para arquivo contendo os nucleotídeos.
                     nucleotide_write.write(f'{nucleotide_dictionary[gene_tag][ORF_key]}\n') #Sequência de nucleotídeos.
                 except AttributeError: #Se der esse erro.
                     peptide_exception_dictionary[f'{gene_tag}_frame{ORF_key[3:7]}'] = ORF_protein #Armazenar os valores com problemas no dicionário de peptídeos inválidos.
@@ -75,5 +75,4 @@ if os.path.exists(multifasta_file): #Se o arquivo existir...
         else: #Se ele digitar qualquer outra coisa.
             print('The answer must be either Yes or No.') #Imprima uma mensagem avisando que ele deve inserir sim ou não apenas.
 else: #Caso o arquivo inserido pelo usuário não seja encontrado...
-    print('Arquivo não encontrado. Insira um nome válido.') #Um aviso é entregue a ele pedindo um arquivo válido.
-    exit()
+    print('File not found. Enter a valid name.') #Um aviso é entregue a ele pedindo um arquivo válido.
