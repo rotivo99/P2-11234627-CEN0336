@@ -8,7 +8,7 @@ start = time.process_time()
 multifasta_file = sys.argv[1] #Pedindo para o usuário o arquivo que será processado.
 
 if os.path.exists(multifasta_file): #Se o arquivo existir...
-    print('File found. Continuing...') #Avise o usuário que tudo certo. 
+    print('File found. Continuing...') #Avise o usuário que tudo certo.
     with open(multifasta_file, 'r') as sys_read, open('ORF.fna', 'w') as nucleotide_write, open('ORF.faa', 'w') as peptide_write:
         nucleotide_dictionary = {} #Criando um dicionário para as sequências de nucleotídeos.
         for line in sys_read: #Para cada linha no arquivo inserido pelo usuário...
@@ -54,25 +54,29 @@ if os.path.exists(multifasta_file): #Se o arquivo existir...
                     nucleotide_exception_dictionary[f'{gene_tag}_frame{ORF_key[3:7]}'] = ORF_seq #Armazenar os valores com problemas no dicionário de nucleotídeos inválidos.
         print('Do you want to save invalid sequences in your files?') #Perguntando ao usuário se ele quer salvar os valores inválidos no arquivo final.
         user_exception_input = input('Answer with Yes or No: ').lower().capitalize() #Capturando o input e corrigindo para ficar do jeito certo.
-        if user_exception_input == 'Yes': #Se o input for sim.
-            peptide_write.write('\nThe following invalid aminoacid sequences were found in your file:\n')
-            nucleotide_write.write('\nThe following invalid nucleotide sequences were found in your file:\n')
-            for exception_tag, exception_value in peptide_exception_dictionary.items(): #Abrindo os itens do dicionário de peptídeos.
-                peptide_write.write(f'>{exception_tag}\n')
-                peptide_write.write(f'{exception_value}\n')
-            for nucleotide_exception_tag, nucleotide_exception_value in nucleotide_exception_dictionary.items(): #Abrindo os itens do dicionário de nucleotídeos.
-                nucleotide_write.write(f'>{nucleotide_exception_tag}\n')
-                nucleotide_write.write(f'{nucleotide_exception_value}\n')
-            print('Output files \'ORF.faa\' and \'ORF.fna\' were generated.') #Mensagem para o usuário avisando sobre os arquivos gerados.
-            end = time.process_time()
-            time = end - start
-            print('CPU Execution time:', time, 'seconds.')
-        elif user_exception_input == 'No': #Se o input for não.
-            print('Output files \'ORF.faa\' and \'ORF.fna\' were generated.') #Mensagem para o usuário avisando sobre os arquivos gerados.
-            end = time.process_time()
-            time = end - start
-            print('CPU Execution time:', time, 'seconds.')
-        else: #Se ele digitar qualquer outra coisa.
-            print('The answer must be either Yes or No.') #Imprima uma mensagem avisando que ele deve inserir sim ou não apenas.
+        while user_exception_input != 'Yes' or user_exception_input != 'No': #Enquanto o input for diferente de sim ou não, esse bloco abaixo vai rodar...
+            if user_exception_input == 'Yes': #Se o input for sim.
+                peptide_write.write('\nThe following invalid aminoacid sequences were found in your file:\n')
+                nucleotide_write.write('\nThe following invalid nucleotide sequences were found in your file:\n')
+                for exception_tag, exception_value in peptide_exception_dictionary.items(): #Abrindo os itens do dicionário de peptídeos.
+                    peptide_write.write(f'>{exception_tag}\n')
+                    peptide_write.write(f'{exception_value}\n')
+                for nucleotide_exception_tag, nucleotide_exception_value in nucleotide_exception_dictionary.items(): #Abrindo os itens do dicionário de nucleotídeos.
+                    nucleotide_write.write(f'>{nucleotide_exception_tag}\n')
+                    nucleotide_write.write(f'{nucleotide_exception_value}\n')
+                print('Output files \'ORF.faa\' and \'ORF.fna\' were generated.') #Mensagem para o usuário avisando sobre os arquivos gerados.
+                end = time.process_time()
+                time = end - start
+                print('CPU Execution time:', time, 'seconds.')
+                break
+            elif user_exception_input == 'No': #Se o input for não.
+                print('Output files \'ORF.faa\' and \'ORF.fna\' were generated.') #Mensagem para o usuário avisando sobre os arquivos gerados.
+                end = time.process_time()
+                time = end - start
+                print('CPU Execution time:', time, 'seconds.')
+                break
+            else: #Se ele digitar qualquer outra coisa.
+                print('The answer must be either Yes or No.') #Imprima uma mensagem avisando que ele deve inserir sim ou não apenas.
+                user_exception_input = input('Answer with Yes or No: ').lower().capitalize() #Se o usuário escrever qualquer coisa além de sim ou não, ele tem mais chances de corrigir o erro ao invés de ter que rodar todo o programa novamente.
 else: #Caso o arquivo inserido pelo usuário não seja encontrado...
     print('File not found. Enter a valid name.') #Um aviso é entregue a ele pedindo um arquivo válido.
