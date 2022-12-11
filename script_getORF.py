@@ -18,17 +18,17 @@ if os.path.exists(multifasta_file): #Se o arquivo existir...
                 full_sequence_line = '' #Criando uma string para armazenar as sequências depois. É importante que ela fique aqui, porque eu quero que toda vez que uma nova sequência com > for encontrada, que ela zere para não misturar sequências diferentes.
             else: #Caso a linha não começe com >
                 full_sequence_line += ''.join(line.rstrip()) #Vamos juntar as linhas de uma mesma tag que tá separada em várias linhas.
-                for ORF1_search in re.finditer(r'(([ATGC]{3})+)', full_sequence_line): #Para cada leitura aberta no primeiro frame.
+                for ORF1_search in re.finditer(r'(([ATGC]{3})+)', full_sequence_line, re.I): #Para cada leitura aberta no primeiro frame.
                     ORF1_sequence = full_sequence_line[ORF1_search.start(1):ORF1_search.end(1)] #Isolando a sequência.
                     nucleotide_dictionary[new_line]['ORF1'] = ORF1_sequence #Colocando ela no dicionário.
                     ORF1_reverse_complement = ORF1_sequence.replace('A', 't').replace('T', 'a').replace('C',  'g').replace('G', 'c').upper() #Criando a sequência complementar.
                     nucleotide_dictionary[new_line]['ORF1_rc'] = ORF1_reverse_complement #Colocando ela no dicionário.
-                for ORF2_search in re.finditer(r'\w(([ATGC]{3})+)', full_sequence_line): #Segunda fase aberta de leitura.
+                for ORF2_search in re.finditer(r'\w(([ATGC]{3})+)', full_sequence_line, re.I): #Segunda fase aberta de leitura.
                     ORF2_sequence = full_sequence_line[ORF2_search.start(1):ORF2_search.end(1)]
                     nucleotide_dictionary[new_line]['ORF2'] = ORF2_sequence
                     ORF2_reverse_complement = ORF2_sequence.replace('A', 't').replace('T', 'a').replace('C',  'g').replace('G', 'c').upper()
                     nucleotide_dictionary[new_line]['ORF2_rc'] = ORF2_reverse_complement
-                for ORF3_search in re.finditer(r'\w{2}(([ATGC]{3})+)', full_sequence_line): #Terceira fase aberta de leitura.
+                for ORF3_search in re.finditer(r'\w{2}(([ATGC]{3})+)', full_sequence_line, re.I): #Terceira fase aberta de leitura.
                     ORF3_sequence = full_sequence_line[ORF3_search.start(1):ORF3_search.end(1)]
                     nucleotide_dictionary[new_line]['ORF3'] = ORF3_sequence
                     ORF3_reverse_complement = ORF3_sequence.replace('A', 't').replace('T', 'a').replace('C',  'g').replace('G', 'c').upper()
@@ -56,8 +56,9 @@ if os.path.exists(multifasta_file): #Se o arquivo existir...
         user_exception_input = input('Answer with Yes or No: ').lower().capitalize() #Capturando o input e corrigindo para ficar do jeito certo.
         while user_exception_input != 'Yes' or user_exception_input != 'No': #Enquanto o input for diferente de sim ou não, esse bloco abaixo vai rodar...
             if user_exception_input == 'Yes': #Se o input for sim.
-                peptide_write.write('\nThe following invalid aminoacid sequences were found in your file:\n')
-                nucleotide_write.write('\nThe following invalid nucleotide sequences were found in your file:\n')
+                if peptide_exception_dictionary != {} and nucleotide_exception_dictionary != {}: #Se os dicionários com as exceções não estiverem vazios...
+                    peptide_write.write('\nThe following invalid aminoacid sequences were found in your file:\n') #Isso e...
+                    nucleotide_write.write('\nThe following invalid nucleotide sequences were found in your file:\n') #isso vai ser acrescentado.
                 for exception_tag, exception_value in peptide_exception_dictionary.items(): #Abrindo os itens do dicionário de peptídeos.
                     peptide_write.write(f'>{exception_tag}\n')
                     peptide_write.write(f'{exception_value}\n')
