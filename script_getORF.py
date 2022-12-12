@@ -59,19 +59,22 @@ if os.path.exists(multifasta_file): #Se o arquivo existir...
                 if peptide_exception_dictionary != {} and nucleotide_exception_dictionary != {}: #Se os dicionários com as exceções não estiverem vazios...
                     peptide_write.write('\nThe following invalid aminoacid sequences were found in your file:\n') #Isso e...
                     nucleotide_write.write('\nThe following invalid nucleotide sequences were found in your file:\n') #isso vai ser acrescentado.
+                else: #Caso contrário...
+                    peptide_write.write('\nNo invalid aminoacid sequences were found.\n') #Isso e...
+                    nucleotide_write.write('\nNo invalid nucleotide sequences were found.\n') #isso vai ser acrescentado.
                 for exception_tag, exception_value in peptide_exception_dictionary.items(): #Abrindo os itens do dicionário de peptídeos.
                     peptide_write.write(f'>{exception_tag}\n')
                     peptide_write.write(f'{exception_value}\n')
                 for nucleotide_exception_tag, nucleotide_exception_value in nucleotide_exception_dictionary.items(): #Abrindo os itens do dicionário de nucleotídeos.
                     nucleotide_write.write(f'>{nucleotide_exception_tag}\n')
                     nucleotide_write.write(f'{nucleotide_exception_value}\n')
-                print('Output files \'ORF.faa\' and \'ORF.fna\' were generated.') #Mensagem para o usuário avisando sobre os arquivos gerados.
+                print('Output files \'ORF.fna\' and \'ORF.faa\' were generated.') #Mensagem para o usuário avisando sobre os arquivos gerados.
                 end = time.process_time()
                 time = end - start
                 print('CPU Execution time:', time, 'seconds.')
                 break
             elif user_exception_input == 'No': #Se o input for não.
-                print('Output files \'ORF.faa\' and \'ORF.fna\' were generated.') #Mensagem para o usuário avisando sobre os arquivos gerados.
+                print('Output files \'ORF.fna\' and \'ORF.faa\' were generated.') #Mensagem para o usuário avisando sobre os arquivos gerados.
                 end = time.process_time()
                 time = end - start
                 print('CPU Execution time:', time, 'seconds.')
